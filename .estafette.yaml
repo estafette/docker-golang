@@ -10,6 +10,7 @@ stages:
   bake:
     image: extensions/docker:windowsservercore-ltsc2019
     action: build
+    expand-variables: false
     container: golang
     repositories:
     - estafette

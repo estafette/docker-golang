@@ -5,7 +5,7 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 RUN netsh interface ipv4 show subinterfaces; \
   Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { \
-    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1400 store=persistent; \
+    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1410 store=persistent; \
   }; \
   netsh interface ipv4 show subinterfaces;
 
