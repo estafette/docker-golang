@@ -1,0 +1,24 @@
+builder:
+  os: windows
+  medium: memory
+
+labels:
+  team: estafette-team
+  language: docker
+
+stages:
+  bake:
+    image: extensions/docker:windowsservercore-ltsc2019
+    action: build
+    container: golang
+    repositories:
+    - estafette
+
+  push-to-docker-hub:
+    image: extensions/docker:windowsservercore-ltsc2019
+    action: push
+    container: golang
+    repositories:
+    - estafette
+    tag:
+    - 1.15.7-windowsservercore-ltsc2019
