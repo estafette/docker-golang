@@ -43,6 +43,11 @@ RUN Write-Host ('Downloading {0} to git.zip ...' -f $env:GIT_DOWNLOAD_URL); \
 	\
 	Write-Host 'Completed installing git.';
 
+# improve git performance
+RUN git config --global core.preloadindex true; \
+    git config --global core.fscache true; \
+    git config --global gc.auto 256
+
 # ideally, this would be C:\go to match Linux a bit closer, but C:\go is the recommended install path for Go itself on Windows
 ENV GOPATH C:\\gopath
 
