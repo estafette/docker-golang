@@ -36,7 +36,7 @@ stages:
     repositories:
     - estafette
 
-  push-to-docker-hub:
+  push-nanoserver-to-docker-hub:
     image: extensions/docker:windowsservercore-ltsc2019
     action: push
     container: golang
