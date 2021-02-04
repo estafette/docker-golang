@@ -11,6 +11,7 @@ stages:
     image: extensions/docker:windowsservercore-ltsc2019
     action: build
     expand-variables: false
+    no-cache: true
     container: golang
     repositories:
     - estafette
@@ -19,7 +20,28 @@ stages:
     image: extensions/docker:windowsservercore-ltsc2019
     action: push
     container: golang
+    no-cache: true
     repositories:
     - estafette
     tags:
     - 1.15.7-windowsservercore-ltsc2019
+
+  bake-nanoserver:
+    image: extensions/docker:windowsservercore-ltsc2019
+    action: build
+    dockerfile: Dockerfile.nanoserver-1809
+    expand-variables: false
+    no-cache: true
+    container: golang
+    repositories:
+    - estafette
+
+  push-to-docker-hub:
+    image: extensions/docker:windowsservercore-ltsc2019
+    action: push
+    container: golang
+    no-cache: true
+    repositories:
+    - estafette
+    tags:
+    - 1.15.7-nanoserver-1809
