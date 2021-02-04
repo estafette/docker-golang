@@ -3,12 +3,6 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN netsh interface ipv4 show subinterfaces; \
-  Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { \
-    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1410 store=persistent; \
-  }; \
-  netsh interface ipv4 show subinterfaces;
-
 # install MinGit (especially for "go get")
 # https://blogs.msdn.microsoft.com/visualstudioalm/2016/09/03/whats-new-in-git-for-windows-2-10/
 # "Essentially, it is a Git for Windows that was stripped down as much as possible without sacrificing the functionality in which 3rd-party software may be interested."

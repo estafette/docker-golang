@@ -5,6 +5,8 @@ FROM mcr.microsoft.com/windows/nanoserver:1809
 COPY --from=builder /go /go
 COPY --from=builder /git /git
 
+USER ContainerAdministrator
+
 # ideally, this would be C:\go to match Linux a bit closer, but C:\go is the recommended install path for Go itself on Windows
 ENV GOPATH C:\\gopath
 
