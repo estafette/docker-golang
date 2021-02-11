@@ -1,4 +1,4 @@
-FROM estafette/golang:1.15.7-windowsservercore-ltsc2019 AS builder
+FROM estafette/golang:1.15.8-windowsservercore-ltsc2019 AS builder
 
 FROM mcr.microsoft.com/windows/nanoserver:1809
 
