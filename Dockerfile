@@ -1,6 +1,11 @@
-FROM golang:1.16.0-nanoserver-1809
+FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS builder
 
-USER ContainerAdministrator
+# change mtu for google cloud
+RUN netsh interface ipv4 show subinterfaces; \
+	  Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { \
+	    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1410 \
+	  }; \
+	  netsh interface ipv4 show subinterfaces;
 
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -38,3 +43,12 @@ RUN Write-Host ('Downloading {0} to git.zip ...' -f $env:GIT_DOWNLOAD_URL); \
 	git version; \
 	\
 	Write-Host 'Completed installing git.';
+
+
+FROM golang:1.16.0-nanoserver-1809
+
+COPY --from=builder /git /git
+
+USER ContainerAdministrator
+
+RUN setx /m PATH "%PATH%;C:\%GOPATH%\bin;C:\go\bin;C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin"
