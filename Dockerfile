@@ -1,14 +1,14 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS builder
 
+# $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
 # change mtu for google cloud
 RUN netsh interface ipv4 show subinterfaces; \
 	  Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { \
 	    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1410 \
 	  }; \
 	  netsh interface ipv4 show subinterfaces;
-
-# $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # install MinGit (especially for "go get")
 # https://blogs.msdn.microsoft.com/visualstudioalm/2016/09/03/whats-new-in-git-for-windows-2-10/
