@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
+FROM 1.16.0-nanoserver-1809
 
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -44,41 +44,4 @@ RUN Write-Host ('Downloading {0} to git.zip ...' -f $env:GIT_DOWNLOAD_URL); \
 	\
 	Write-Host 'Completed installing git.';
 
-# improve git performance
-RUN git config --global core.preloadindex true; \
-    git config --global core.fscache true; \
-    git config --global gc.auto 256
-
-# ideally, this would be C:\go to match Linux a bit closer, but C:\go is the recommended install path for Go itself on Windows
-ENV GOPATH C:\\gopath
-
-# PATH isn't actually set in the Docker image, so we have to set it from within the container
-RUN $newPath = ('{0}\bin;C:\go\bin;{1}' -f $env:GOPATH, $env:PATH); \
-	Write-Host ('Updating PATH: {0}' -f $newPath); \
-	[Environment]::SetEnvironmentVariable('PATH', $newPath, [EnvironmentVariableTarget]::Machine);
-# doing this first to share cache across versions more aggressively
-
-ENV GOLANG_VERSION="1.15.8" \
-    GOLANG_SHA="edc1bd458f090ac4823ec79181b350bd5446073b4432acaf2b326c85415d7daa"
-
-RUN $url = 'https://storage.googleapis.com/golang/go${env:GOLANG_VERSION}.windows-amd64.zip'; \
-	Write-Host ('Downloading {0} to go.zip ...' -f $url); \
-	Invoke-WebRequest -Uri $url -OutFile 'go.zip' -TimeoutSec 300; \
-	\
-	$sha256 = $env:GOLANG_SHA; \
-	Write-Host ('Verifying sha256 ({0}) ...' -f $sha256); \
-	if ((Get-FileHash go.zip -Algorithm sha256).Hash -ne $sha256) { \
-		Write-Host 'FAILED!'; \
-		exit 1; \
-	}; \
-	\
-	Write-Host 'Expanding go.zip ...'; \
-	Expand-Archive go.zip -DestinationPath C:\; \
-	\
-	Write-Host 'Removing go.zip ...'; \
-	Remove-Item go.zip -Force; \
-	\
-	Write-Host 'Verifying install ("go version") ...'; \
-	go version; \
-	\
-	Write-Host 'Complete installing go.';
+USER ContainerAdministrator
