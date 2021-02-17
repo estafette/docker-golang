@@ -1,14 +1,9 @@
 FROM golang:1.16.0-nanoserver-1809
 
+USER ContainerAdministrator
+
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-# change mtu for google cloud
-RUN netsh interface ipv4 show subinterfaces; \
-	  Get-NetAdapter | Where-Object Name -like "*Ethernet*" | ForEach-Object { \
-	    & netsh interface ipv4 set subinterface $_.InterfaceIndex mtu=1410 \
-	  }; \
-	  netsh interface ipv4 show subinterfaces;
 
 # install MinGit (especially for "go get")
 # https://blogs.msdn.microsoft.com/visualstudioalm/2016/09/03/whats-new-in-git-for-windows-2-10/
@@ -43,5 +38,3 @@ RUN Write-Host ('Downloading {0} to git.zip ...' -f $env:GIT_DOWNLOAD_URL); \
 	git version; \
 	\
 	Write-Host 'Completed installing git.';
-
-USER ContainerAdministrator
