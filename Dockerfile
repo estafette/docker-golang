@@ -1,4 +1,4 @@
-FROM 1.16.0-nanoserver-1809
+FROM golang:1.16.0-nanoserver-1809
 
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
